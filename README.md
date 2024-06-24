@@ -1,2 +1,2 @@
-![Header image!](/assets/images/github-header.png "Github header")
+![Header image!](/github-header.png "Github header")
 # MagicPush
