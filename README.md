@@ -3,7 +3,7 @@
 Welcome to the MagicPush repository! MagicPush is a simple tool to automate, schedule and track push notifications.
 
 ## Cloud hosted
-Visit our website to use the cloud hosted version of MagicPush, start for free today! [Click here](https://magicpush.io)
+Visit our website to use the cloud hosted version of MagicPush, start for free today! [Click here](https://getmagicpush.com)
 
 ## Features
 - [x] Send push notifications on web, Android and iOS
