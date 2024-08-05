@@ -2,7 +2,6 @@ from magicpush import app, celery_app
 from magicpush.helpers.apn import Apn
 from magicpush.helpers.fcm import Fcm
 from magicpush.helpers.encryption import Encryption
-from magicpush.helpers.stripe_billing import StripeBilling
 from magicpush.models import (User, App, AppUser, AppUserKey, AppUserValue, AppUserNotification, Flow, FlowEvent,
                               Notification, ActiveFlow, CompletedFlowEvent, DelayedFlowEvent)
 
@@ -14,7 +13,6 @@ from dateutil.relativedelta import relativedelta
 
 apn = Apn()
 fcm = Fcm()
-stripe = StripeBilling()
 
 
 @celery_app.task()
@@ -507,70 +505,3 @@ def send_push_notification(db_session, selected_app, app_user, notification, in_
         db_session.commit()
 
     return response
-
-@celery_app.task()
-def run_billing():
-    from magicpush.database import db_session
-    try:
-        users = (db_session.query(User)
-                 .filter(User.stripe_customer_id != None)
-                 .all())
-
-        for user in users:
-            print(user.email)
-            print(user.last_billed_at)
-            if (user.last_billed_at is None or
-                    user.last_billed_at <= datetime.datetime.utcnow() - datetime.timedelta(days=30)):
-                print('billing')
-                total_subscribers = (db_session.query(AppUser)
-                                     .join(App, AppUser.app_id == App.id)
-                                     .filter(App.user_id == user.id, AppUser.web_push_endpoint != None)
-                                     .count())
-
-                active_flows = db_session.query(Flow).filter(Flow.enabled == True).count()
-
-                print('total_subscribers: {}'.format(total_subscribers))
-
-                if total_subscribers < 1000 and active_flows <= 1:
-                    continue
-
-                if user.has_purchased_deal is True and total_subscribers < 200000:
-                    continue
-
-                try:
-                    subscriptions = stripe.get_subscriptions(user.stripe_customer_id)
-
-                    if len(subscriptions['data']) == 0:
-                        continue
-
-                    current_price_id = subscriptions['data'][0]['items']['data'][0]['price']['id']
-
-                    value = 1
-                    if total_subscribers >= 5000 and total_subscribers < 15000:
-                        value = 2
-                    elif total_subscribers >= 15000 and total_subscribers < 50000:
-                        value = 4
-                    elif total_subscribers >= 50000 and total_subscribers < 100000:
-                        value = 6
-                    elif total_subscribers >= 100000:
-                        if current_price_id == 'price_1PO58FInCJD8iYfuCiyV2z0K' or\
-                                current_price_id == 'price_1PNzKYInCJD8iYfuGjhrI4m9':
-                            value = 105 + ((total_subscribers - 100000) / 1000)
-                        else:
-                            value = 8 + ((total_subscribers - 100000) / 1000)
-
-                    print('value: {}'.format(value))
-
-                    stripe.update_meter(user.stripe_customer_id, value)
-
-                    user.last_billed_at = datetime.datetime.utcnow()
-                    db_session.commit()
-                except Exception as e:
-                    app.logger.exception('Run Billing: {}'.format(e))
-                    continue
-        db_session.close()
-    except Exception as e:
-        app.logger.exception('Run Billing: {}'.format(e))
-        db_session.rollback()
-        db_session.expunge_all()
-        db_session.close()

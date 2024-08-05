@@ -71,7 +71,6 @@ sentry_sdk.init(
 from magicpush.api.v1.sdk import sdk
 from magicpush.api.v1.rest import rest
 from magicpush.api.v1.health import health
-from magicpush.api.v1.webhooks import webhooks
 from magicpush.api.v1.dashboard.apps import apps
 from magicpush.api.v1.dashboard.flow import flow
 from magicpush.api.v1.dashboard.user import users
@@ -87,7 +86,6 @@ app.register_blueprint(flow, url_prefix='/api/v1/flows')
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(admin, url_prefix='/api/v1/admin')
 app.register_blueprint(health, url_prefix='/api/v1/health')
-app.register_blueprint(webhooks, url_prefix='/api/v1/webhooks')
 app.register_blueprint(scheduler, url_prefix='/api/v1/scheduler')
 app.register_blueprint(statistics, url_prefix='/api/v1/statistics')
 app.register_blueprint(notifications, url_prefix='/api/v1/notifications')
