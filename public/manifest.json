@@ -1,0 +1,13 @@
+{
+  "name": "MagicPush",
+  "display": "standalone",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "icons": [
+    {
+      "src": "images/magicpushlogo.png",
+      "type": "image/png",
+      "sizes": "500x500"
+    }
+  ]
+}

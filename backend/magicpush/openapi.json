@@ -1,0 +1,362 @@
+{
+  "components": {
+    "schemas": {
+      "Event": {
+        "properties": {
+          "event": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "type": "object"
+      },
+      "HTTPError": {
+        "properties": {
+          "detail": {
+            "type": "object"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Send": {
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "recipients": {
+            "type": "string"
+          },
+          "repeat": {
+            "type": "boolean"
+          },
+          "repeat_interval": {
+            "type": "integer"
+          },
+          "scheduled_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "translations": {
+            "items": {
+              "$ref": "#/components/schemas/Translation"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "message",
+          "title"
+        ],
+        "type": "object"
+      },
+      "SendOutput": {
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "default_message": {
+            "type": "string"
+          },
+          "default_title": {
+            "type": "string"
+          },
+          "delivered": {
+            "type": "boolean"
+          },
+          "delivery_percentage": {
+            "type": "integer"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "image": {
+            "type": "string"
+          },
+          "live": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "recipients": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "repeat": {
+            "type": "boolean"
+          },
+          "repeat_interval": {
+            "type": "integer"
+          },
+          "scheduled": {
+            "type": "boolean"
+          },
+          "scheduled_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "sent": {
+            "type": "boolean"
+          },
+          "translations": {
+            "items": {
+              "$ref": "#/components/schemas/Translation"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Translation": {
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "language",
+          "message",
+          "title"
+        ],
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "detail": {
+            "properties": {
+              "<location>": {
+                "properties": {
+                  "<field_name>": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Value": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "APIFlask",
+    "version": "0.1.0"
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/api/v1/rest/send": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Send"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendOutput"
+                }
+              }
+            },
+            "description": "Successful response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Send",
+        "tags": [
+          "Rest"
+        ]
+      }
+    },
+    "/api/v1/rest/users/{app_user_hash}/events": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "app_user_hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Register Event",
+        "tags": [
+          "Rest"
+        ]
+      }
+    },
+    "/api/v1/rest/users/{app_user_hash}/values": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "app_user_hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Value"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Register Value",
+        "tags": [
+          "Rest"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Rest"
+    }
+  ]
+}

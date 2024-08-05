@@ -1,0 +1,8 @@
+venv
+.idea
+__pycache__
+model
+output
+migrations
+.env
+magicpush/storage/public
