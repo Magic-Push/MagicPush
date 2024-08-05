@@ -14,5 +14,5 @@ Visit our website to use the cloud hosted version of MagicPush, start for free t
 ## Installation
 To easily install MagicPush run the following to build the Docker image:
 ```bash
-docker pull magicpush/magicpush
+docker pull svenvdz/magicpush
 ```
