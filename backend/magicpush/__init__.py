@@ -1,4 +1,3 @@
-import sentry_sdk
 from celery import Celery
 from apiflask import APIFlask
 from flask_cors import CORS
@@ -56,17 +55,6 @@ db = SQLAlchemy(app)
 from magicpush.models import *
 
 migrate = Migrate(app, db)
-
-sentry_sdk.init(
-    dsn="https://828b6e10f2f1f32054e436cb46433981@o362710.ingest.us.sentry.io/4507431485374464",
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    traces_sample_rate=1.0,
-    # Set profiles_sample_rate to 1.0 to profile 100%
-    # of sampled transactions.
-    # We recommend adjusting this value in production.
-    profiles_sample_rate=1.0,
-)
 
 from magicpush.api.v1.sdk import sdk
 from magicpush.api.v1.rest import rest
